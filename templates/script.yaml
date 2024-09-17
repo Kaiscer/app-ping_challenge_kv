@@ -1,0 +1,16 @@
+{{- if .Values.scriptEnabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-script
+  annotations:
+    "helm.sh/hook": post-upgrade
+spec:
+  template:
+    spec:
+      containers:
+        - name: script-runner
+          image: alpine:latest
+          command: ["/bin/sh", "-c", "{{ .Values.scriptCommand }}"]
+      restartPolicy: Never
+{{- end }}

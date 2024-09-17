@@ -4,6 +4,33 @@
 
 replicaCount: 1
 
+appName: "app-ping"
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: "app"
+              operator: In
+              values:
+                - "{{ .Values.appName }}"
+        topologyKey: "kubernetes.io/hostname"
+      - labelSelector:
+          matchExpressions:
+            - key: "app"
+              operator: In
+              values:
+                - "{{ .Values.appName }}"
+        topologyKey: "topology.kubernetes.io/zone" 
+
+nodeSelector:
+  disallowed-node-group: "false"
+
+scriptEnabled: true
+scriptCommand: "echo 'Ejecutando script desde values.yaml'; sleep 5; echo 'Terminado'"
+
+
 image:
   repository: ealen/echo-server
   pullPolicy: IfNotPresent
